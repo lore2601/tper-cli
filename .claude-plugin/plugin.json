@@ -1,7 +1,7 @@
 {
   "name": "tper",
-  "description": "Teach Claude Code to answer questions about TPER buses, fares, news and complaints in Bologna and Ferrara with the tper CLI.",
-  "version": "0.1.0",
+  "description": "Teach Claude Code to answer questions about TPER buses, trains, fares, news and complaints in Bologna and Ferrara with the tper CLI.",
+  "version": "0.2.0",
   "author": {
     "name": "Lorenzo Magnanelli"
   },

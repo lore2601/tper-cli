@@ -24,6 +24,7 @@ from tper_cli.http import Http
 from tper_cli.infomobility import Infomobility
 from tper_cli.news import NewsFeeds
 from tper_cli.output import Printer
+from tper_cli.rfi import Rfi
 from tper_cli.zones import ZoneCalculator
 
 ROME = ZoneInfo("Europe/Rome")
@@ -73,6 +74,10 @@ class AppContext:
     @cached_property
     def infomobility(self) -> Infomobility:
         return Infomobility(self.http)
+
+    @cached_property
+    def rfi(self) -> Rfi:
+        return Rfi(self.http, cfg.cache_dir(self.env), self.now)
 
     @cached_property
     def ledger(self) -> Ledger:

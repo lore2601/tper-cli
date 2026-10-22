@@ -30,6 +30,10 @@ tper bus stops near 44.5058 11.3432 -r 200
 # What will my commute cost, and what is the cheapest way to pay?
 tper fare compare --from Bologna --to "San Giovanni in Persiceto" --days-per-week 5 --profile under27
 
+# Is my train late, and where does it leave from?
+tper rail train 17709 -s "Bologna Centrale"
+tper rail board "bologna centrale" --carrier tper
+
 # What to know before a train
 tper rail alerts
 tper news --category rail

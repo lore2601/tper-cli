@@ -82,3 +82,13 @@ CLAIMS: list[Column] = [
     col("event date", "eventDate"),
     col("id", "fingerprint"),
 ]
+BOARD: list[Column] = [
+    col("train", "train"),
+    col("category", "category", 18),
+    col("carrier", "carrier", 16),
+    col("to/from", "destination", 26),
+    col("time", "time"),
+    col("delay", "delayMinutes"),
+    col("plat.", "platform"),
+    col("status", "status"),
+]

@@ -7,7 +7,7 @@
   - `data/opendata.py` (download, versioned cache) and `data/catalog.py` (typed views).
   - `webforms.py`, `zones.py`: ASP.NET WebForms sessions over HTTP and the zone calculator.
   - `fares.py` + `data/tariffs.json` (built by `tools/build_tariffs.py`): the price list and the comparison logic.
-  - `news.py` (RSS), `infomobility.py` (Trenitalia notices).
+  - `news.py` (RSS), `infomobility.py` (Trenitalia notices), `rfi.py` (live station boards: names, `placeId`, board parser).
   - `claim/`: profile (0600), claim model, ledger, Telerik helpers and the wizard (`form.py`).
   - `commands/*`: one click group or command per module. `cli.py`: root command and error handling.
 - Run `uv run ruff format src tests tools && uv run ruff check src tests tools && uv run mypy && uv run pytest` before finishing. Coverage must stay at or above 80%.

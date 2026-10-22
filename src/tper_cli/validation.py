@@ -14,7 +14,7 @@ from tper_cli.errors import ValidationError
 STOP_RE = re.compile(r"^\d{1,6}$")
 LINE_RE = re.compile(r"^[0-9A-Za-z]{1,6}$")
 TIME_RE = re.compile(r"^(\d{1,2})[:.]?(\d{2})$")
-ZONE_CODE_RE = re.compile(r"^\d{3}$")
+TRAIN_RE = re.compile(r"^\d{1,6}$")
 TAX_CODE_RE = re.compile(r"^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 POSTAL_CODE_RE = re.compile(r"^\d{5}$")
@@ -35,6 +35,15 @@ def stop_code(value: str) -> str:
 
 def is_stop_code(value: str) -> bool:
     return bool(STOP_RE.match(str(value).strip()))
+
+
+def train_number(value: str) -> str:
+    value = str(value).strip()
+    if not TRAIN_RE.match(value):
+        raise ValidationError(
+            f"Invalid train number {value!r}", hint="Train numbers are digits, e.g. 17709."
+        )
+    return value
 
 
 def line_code(value: str) -> str:

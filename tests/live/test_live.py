@@ -73,6 +73,20 @@ def test_trenitalia_notices_page_still_has_its_structure(http: Http) -> None:
     assert len(notices) > 3 and all(n.title for n in notices)
 
 
+def test_rfi_live_boards_still_parse(http: Http, tmp_path: Path) -> None:
+    from tper_cli.rfi import Rfi
+
+    rfi = Rfi(http, tmp_path, rome_now)
+    board = rfi.board("Bologna Centrale")
+    assert board.updated_at is not None and len(board.trains) >= 5
+    assert all(t.number and t.time for t in board.trains)
+    tper = [t for t in board.trains if "TPER" in t.carrier]
+    assert tper and all(t.stops for t in tper)
+    first = board.trains[0]
+    hit = rfi.track(first.number, ["Bologna Centrale"])
+    assert hit is not None and hit[1].number == first.number
+
+
 def test_zone_calculator_counts_zones(http: Http, catalog: Catalog, tmp_path: Path) -> None:
     calc = ZoneCalculator(http, catalog, tmp_path, rome_now)
     assert {"BOLOGNA", "FERRARA", "IMOLA"} <= set(calc.names())

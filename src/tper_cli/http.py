@@ -27,6 +27,7 @@ ALLOWED_HOSTS = (
     "static.tper.it",
     "s3.eu-south-1.amazonaws.com",
     "trenitalia.com",
+    "rfi.it",
 )
 RETRY_STATUS = {429, 500, 502, 503, 504}
 

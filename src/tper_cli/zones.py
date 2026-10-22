@@ -17,7 +17,7 @@ from pathlib import Path
 
 from tper_cli import search
 from tper_cli.data.catalog import Catalog
-from tper_cli.errors import AmbiguousError, NotFoundError, UpstreamError
+from tper_cli.errors import UpstreamError
 from tper_cli.fares import URBAN_ZONES
 from tper_cli.http import Http
 from tper_cli.webforms import combo, load, submit
@@ -43,21 +43,11 @@ def match_key(name: str) -> str:
 
 def pick_place(names: list[str], query: str) -> str:
     """The calculator place that ``query`` refers to, or an error that explains why not."""
-    ranked = search.rank(query, names, lambda n: (n,), limit=6)
-    if not ranked:
-        raise NotFoundError(
-            f"No place matches {query!r}",
-            hint="Search with `tper fare places QUERY`, or pass --zones N yourself.",
-            reason="placeNotFound",
-        )
-    top = ranked[0][0]
-    close = [n for s, n in ranked if s >= top - 1e-9]
-    if len(close) == 1 and (len(ranked) == 1 or top - ranked[1][0] >= 10 or top >= 100):
-        return close[0]
-    raise AmbiguousError(
-        f"{query!r} matches several places",
-        hint="Use the exact name of one of the candidates.",
-        details={"candidates": [n for _, n in ranked[:5]]},
+    return search.pick(
+        names,
+        query,
+        noun="place",
+        hint="Search with `tper fare places QUERY`, or pass --zones N yourself.",
     )
 
 

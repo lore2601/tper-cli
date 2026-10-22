@@ -8,6 +8,8 @@ from collections.abc import Callable, Iterable, Sequence
 from difflib import SequenceMatcher
 from typing import TypeVar
 
+from tper_cli.errors import AmbiguousError, NotFoundError
+
 T = TypeVar("T")
 
 _NON_WORD = re.compile(r"[^a-z0-9]+")
@@ -54,3 +56,19 @@ def rank(
             scored.append((best, item))
     scored.sort(key=lambda pair: -pair[0])
     return scored[:limit] if limit else scored
+
+
+def pick(names: list[str], query: str, *, noun: str, hint: str) -> str:
+    """The one name that ``query`` clearly refers to, or an error that says why not."""
+    ranked = rank(query, names, lambda n: (n,), limit=6)
+    if not ranked:
+        raise NotFoundError(f"No {noun} matches {query!r}", hint=hint, reason=f"{noun}NotFound")
+    top = ranked[0][0]
+    close = [n for s, n in ranked if s >= top - 1e-9]
+    if len(close) == 1 and (len(ranked) == 1 or top - ranked[1][0] >= 10 or top >= 100):
+        return close[0]
+    raise AmbiguousError(
+        f"{query!r} matches several {noun}s",
+        hint="Use the exact name of one of the candidates.",
+        details={"candidates": [n for _, n in ranked[:5]]},
+    )

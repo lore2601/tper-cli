@@ -252,6 +252,54 @@ def test_news(run: Run, rsps: responses.RequestsMock) -> None:
     assert run("news", "--since", "never").code == 3
 
 
+# ------------------------------------------------------------------------ live train boards
+
+
+def mock_rfi(rsps: responses.RequestsMock) -> None:
+    from tper_cli.rfi import MONITOR_URL, STATION_URL, STATIONS_URL
+
+    rsps.add(responses.GET, STATIONS_URL, body=fixture_text("rfi_stations.html"))
+    for slug, place in (("bologna-centrale", "683"), ("ferrara", "1309"), ("imola", "1487"),
+                        ("modena", "1747"), ("parma", "1"), ("rimini", "2358")):  # fmt: skip
+        rsps.add(responses.GET, STATION_URL.format(slug=slug),
+                 body=fixture_text("rfi_station_page.html").replace("683", place))  # fmt: skip
+    rsps.add(responses.GET, MONITOR_URL, body=fixture_text("rfi_board.html"))
+
+
+def test_rail_board(run: Run, rsps: responses.RequestsMock) -> None:
+    mock_rfi(rsps)
+    data = run("rail", "board", "bologna centrale", "-n", "2").json
+    assert data["station"] == "Bologna Centrale" and data["board"] == "departures"
+    assert [t["train"] for t in data["trains"]] == ["8823", "17709"]
+    assert data["trains"][1]["delayMinutes"] == 20 and data["updatedAt"].startswith(
+        "2026-10-22T19:"
+    )
+    tper = run("rail", "board", "bologna centrale", "--carrier", "tper").json
+    assert {t["carrier"] for t in tper["trains"]} == {"TRENITALIA TPER"}
+    arrivals = run("rail", "board", "bologna centrale", "--arrivals").json
+    assert arrivals["board"] == "arrivals" and "origin" in arrivals["trains"][0]
+    assert run("rail", "board", "reggio").error["reason"] == "ambiguous"
+
+
+def test_rail_train(run: Run, rsps: responses.RequestsMock) -> None:
+    mock_rfi(rsps)
+    found = run("rail", "train", "17709").json
+    assert found["found"] is True and found["expectedTime"] == "20:06"
+    assert (
+        found["station"] == "Bologna Centrale"
+        and found["stops"][0]["station"] == "BOLOGNA S.VITALE"
+    )
+    missing = run("rail", "train", "424242", "-s", "Ferrara").json
+    assert missing["found"] is False and missing["searched"] == ["Ferrara"]
+    assert run("rail", "train", "17709; ls").code == 3
+
+
+def test_rail_stations_from_rfi(run: Run, rsps: responses.RequestsMock) -> None:
+    mock_rfi(rsps)
+    names = [s["name"] for s in run("rail", "stations", "--rfi", "-q", "reggio").json["stations"]]
+    assert names[0].startswith("Reggio Emilia")
+
+
 # ------------------------------------------------------------------------ fares
 
 
@@ -381,6 +429,7 @@ def test_doctor_reports_each_service(
     )
     rsps.add(responses.GET, ZONES_URL, body=calculator_page())
     rsps.add(responses.GET, form.URL, body=fixture_text("claim_step1.html"))
+    mock_rfi(rsps)
     data = run("doctor").json
     status = {c["check"]: c["ok"] for c in data["checks"]}
     assert (

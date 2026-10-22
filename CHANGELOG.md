@@ -6,6 +6,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-22
+
+### Added
+
+- `tper rail board STATION` and `tper rail train NUMBER`: live departures and arrivals of a
+  station and single-train tracking (expected time, delay, platform, carrier, next stops) from
+  RFI's live station boards, including Trenitalia Tper regional services. Stations are resolved
+  by name; `rail stations --rfi` lists the names that have a board.
+- `tper doctor` checks the RFI board, and a live contract test covers the board parser.
+
+### Changed
+
+- The README and docs no longer say that trains cannot be followed: they explain why the data
+  comes from station boards and not from ViaggiaTreno.
+
 ## [0.1.0] - 2026-10-22
 
 ### Added
@@ -33,5 +48,6 @@ All notable changes to this project are documented here. The format follows
 - A weekly workflow that runs contract tests against the real services and compares the bundled
   price list with tper.it.
 
-[Unreleased]: https://github.com/lore2601/tper-cli/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/lore2601/tper-cli/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/lore2601/tper-cli/releases/tag/v0.2.0
 [0.1.0]: https://github.com/lore2601/tper-cli/releases/tag/v0.1.0

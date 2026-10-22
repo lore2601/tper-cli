@@ -6,9 +6,9 @@
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
-`tper` is a command-line interface for the public transport of **Bologna and Ferrara** run by [TPER](https://www.tper.it/) (Trasporto Passeggeri Emilia-Romagna). It is meant for **AI agents** (Claude Code, Gemini CLI, Codex, scripts) and for people who want a bus time, a fare or a piece of news without opening an app. You can see when the next bus arrives, find stops and lines, work out how many fare zones a trip crosses, compare tickets and passes, read service news, check rail disruptions and send a complaint. Output is predictable JSON, and complaints go through safety rails.
+`tper` is a command-line interface for the public transport of **Bologna and Ferrara** run by [TPER](https://www.tper.it/) (Trasporto Passeggeri Emilia-Romagna). It is meant for **AI agents** (Claude Code, Gemini CLI, Codex, scripts) and for people who want a bus time, a train delay, a fare or a piece of news without opening an app. You can see when the next bus arrives, follow a train and its delay, find stops and lines, work out how many fare zones a trip crosses, compare tickets and passes, read service news, check rail disruptions and send a complaint. Output is predictable JSON, and complaints go through safety rails.
 
-It speaks only to **official public sources**: the Hello Bus web service, TPER's open data, its RSS feeds, its zone calculator and complaint form, and Trenitalia's public disruption notices. No account and no API key are needed.
+It speaks only to **official public sources**: the Hello Bus web service, TPER's open data, its RSS feeds, its zone calculator and complaint form, RFI's live station boards and Trenitalia's public disruption notices. No account and no API key are needed.
 
 > **Unofficial.** Not affiliated with or endorsed by TPER or Trenitalia. TPER and its logo are trademarks of their owners.
 
@@ -17,6 +17,15 @@ $ tper bus arrivals 4476
 LINE  TYPE      TIME   IN MIN  BUS   WHEELCHAIR
 11B   realtime  19:41  8       1638  yes
 11B   realtime  19:53  20      5753  yes
+
+$ tper rail board "bologna centrale" --carrier tper -n 4
+TRAIN  CATEGORY  CARRIER          TO/FROM        TIME   DELAY  PLAT.    STATUS
+17709  REG       TRENITALIA TPER  PIANORO        19:46  20     3        delayed
+90035  REG       TRENITALIA TPER  BAZZANO (FER)  19:53  0      3-OVEST  onTime
+...
+
+$ tper rail train 17709 -f json
+{"found":true,"train":"17709","carrier":"TRENITALIA TPER","destination":"PIANORO","time":"19:46","expectedTime":"20:06","delayMinutes":20,"status":"delayed","platform":"3","stops":[{"station":"BOLOGNA S.VITALE","time":"19:50"},...],"station":"Bologna Centrale","board":"departures"}
 
 $ tper fare quote --from Bologna --to "San Giovanni in Persiceto" --profile under27
 3 zone(s), bologna price list, profile under27
@@ -42,6 +51,7 @@ $ tper bus arrivals 4476 -l 11 -f json
 ## Features
 
 - **Live buses.** Real-time arrivals from TPER's own GPS data (`tper bus arrivals`), or the timetable for a given time with `--at 18:30`. Stops by code **or by name**: a name that matches several stops is answered with the candidates instead of a guess.
+- **Trains.** `tper rail board STATION` shows the live departures or arrivals of a station with delay, platform and carrier (Trenitalia Tper, Trenitalia, Italo…), and `tper rail train NUMBER` follows one train: expected time, platform and next stops. Data comes from RFI's live station boards.
 - **Stops and lines.** Search stops with accent- and typo-tolerant matching, find the stops near a point, see which lines serve a stop and the nearest ticket retailer.
 - **Fares you can trust.** The number of zones of a trip comes from TPER's own zone calculator; prices come from the official price list (Bologna, Ferrara and Imola urban networks, extra-urban zones 1 to 10, Ferrobus). Reduced prices for under 27, over 65 and over 70.
 - **Which ticket is cheapest.** `tper fare compare` weighs single tickets, carnets, day tickets, monthly and annual passes against how much you travel, and tells you the break-even point.
@@ -74,7 +84,9 @@ The first command that needs the open data downloads it (about 3 MB) into the ca
 | `tper bus arrivals STOP [-l LINE] [--at HH:MM]` | Next buses at a stop (code or name): live, or timetable with `--at` |
 | `tper bus stops search QUERY [-m CITY]` / `near LAT LON [-r M]` / `get STOP [--retailer]` | Find stops, see lines and fare zone |
 | `tper bus lines [-q PREFIX]` / `bus line LINE` | Lines, and the stops of a line |
-| `tper rail lines` / `rail stations [-q TEXT]` | FER railway lines and stations (open data) |
+| `tper rail board STATION [--arrivals] [-c CARRIER]` | Live departures/arrivals of a station: delay, platform, carrier |
+| `tper rail train NUMBER [-s STATION]…` | Follow a train: delay, platform, next stops |
+| `tper rail lines` / `rail stations [-q TEXT] [--rfi]` | FER railway lines and stations (open data), or RFI board names |
 | `tper rail alerts [-r REGION] [--national] [--full]` | Rail disruptions and works from Trenitalia |
 | `tper news [-c CATEGORY] [-l LINE] [--since DATE] [--full]` | TPER news and diversions |
 | `tper fare places QUERY [--localities]` | Place names the zone calculator understands |
@@ -114,6 +126,7 @@ Run `tper COMMAND --help` for every option. Global options (`-f`, `--fields`, `-
 | Prices | [tper.it/biglietti-abbonamenti/tariffe](https://www.tper.it/biglietti-abbonamenti/tariffe), snapshot in `tariffs.json` | Public price list |
 | Zone counts | TPER's public [zone calculator](https://solweb.tper.it/web/tools/zone-calculator.aspx) | Public tool |
 | News | TPER's [RSS feeds](https://www.tper.it/content/feed-rss) | Published for syndication |
+| Live train boards | RFI's [monitor arrivi e partenze live](https://www.rfi.it/it/stazioni.html) (station pages on rfi.it, boards on `iechub.rfi.it`) | Public pages, no `robots.txt`; RFI's site terms forbid redistribution without consent, so results are shown to you, not republished |
 | Rail notices | Trenitalia's [Notizie Infomobilità](https://www.trenitalia.com/it/informazioni/Infomobilita/notizie-infomobilita.app.html) | Public page, `robots.txt` allows it |
 | Complaints | TPER's [complaint form](https://solweb.tper.it/web/communications/complaints.aspx) | Your own data, sent by you |
 
@@ -154,7 +167,7 @@ See [docs/agents.md](docs/agents.md) for permission rules and recipes.
 
 ## Limitations
 
-- **No live train positions or delays.** Trenitalia's ViaggiaTreno service answers `403 Access Denied` to anything that is not a web browser, and TPER publishes no real-time feed for the FER lines. `tper` does not try to get around that. For trains you get the lines and stations, the disruption and works notices, and TPER's rail news. See [docs/data-sources.md](docs/data-sources.md#what-is-not-included-and-why).
+- **Trains are followed from station boards, not from GPS.** A train shows up on the board of a station it calls at roughly one to two hours ahead, with its delay, platform and next stops. `rail train` looks at Bologna Centrale, Ferrara, Modena, Imola, Parma and Rimini unless you pass `--station`. Some FER services do appear (they call at Bologna Centrale), but a service that never touches an RFI station is not on any board. Trenitalia's own ViaggiaTreno service answers `403 Access Denied` to anything that is not a web browser, and `tper` does not try to get around that. See [docs/data-sources.md](docs/data-sources.md#what-is-not-included-and-why).
 - **Bologna and Ferrara networks only** (plus the extra-urban lines TPER runs). Other Emilia-Romagna operators (SETA, TEP, START Romagna) have their own fares.
 - **Prices are a dated snapshot** (`priceListDate` in the output). A weekly workflow compares it with tper.it and opens an issue when it drifts. Check at a TPER point before buying something expensive.
 - **The zone calculator only knows municipality-level names** (`fare places` lists them). For a hamlet, use the nearest municipality or pass `--zones N`.
