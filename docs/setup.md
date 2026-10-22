@@ -3,7 +3,7 @@
 `tper` needs no account, token or API key. Install it and run it.
 
 ```bash
-pipx install git+https://github.com/lore2601/tper-cli
+pipx install tper-cli          # or: uv tool install tper-cli
 tper doctor
 ```
 

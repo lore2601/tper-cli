@@ -1,6 +1,7 @@
 # tper: TPER public transport from the command line
 
 [![CI](https://github.com/lore2601/tper-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/lore2601/tper-cli/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/tper-cli?label=PyPI&cacheSeconds=3600)](https://pypi.org/project/tper-cli/)
 [![CodeQL](https://github.com/lore2601/tper-cli/actions/workflows/codeql.yml/badge.svg)](https://github.com/lore2601/tper-cli/actions/workflows/codeql.yml)
 [![Upstream](https://github.com/lore2601/tper-cli/actions/workflows/upstream.yml/badge.svg)](https://github.com/lore2601/tper-cli/actions/workflows/upstream.yml)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](pyproject.toml)
@@ -71,7 +72,9 @@ $ tper bus arrivals 4476 -l 11 -f json
 Requires Python 3.11+. The only dependencies are `click`, `requests` and `defusedxml`.
 
 ```bash
-pipx install git+https://github.com/lore2601/tper-cli      # or: uv tool install git+https://github.com/lore2601/tper-cli
+pipx install tper-cli          # or: uv tool install tper-cli
+# development version:
+pipx install git+https://github.com/lore2601/tper-cli
 tper doctor                                                # checks every online service the CLI uses
 ```
 

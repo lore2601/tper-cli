@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-22
+
+### Changed
+
+- First release published on PyPI: `pipx install tper-cli`. The README gets the PyPI badge and
+  the new install command.
+
 ## [0.2.0] - 2026-10-22
 
 ### Added
@@ -48,6 +55,7 @@ All notable changes to this project are documented here. The format follows
 - A weekly workflow that runs contract tests against the real services and compares the bundled
   price list with tper.it.
 
-[Unreleased]: https://github.com/lore2601/tper-cli/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/lore2601/tper-cli/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/lore2601/tper-cli/releases/tag/v0.2.1
 [0.2.0]: https://github.com/lore2601/tper-cli/releases/tag/v0.2.0
 [0.1.0]: https://github.com/lore2601/tper-cli/releases/tag/v0.1.0

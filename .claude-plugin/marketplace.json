@@ -11,7 +11,7 @@
       "name": "tper",
       "source": "./",
       "description": "Skill for the tper CLI: live buses and trains, stops, fares, news and complaints for Bologna and Ferrara.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "productivity"
     }
   ]
