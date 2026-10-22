@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `docs/roadmap.md`: planned features and what still has to be verified.
+
 ## [0.2.1] - 2026-10-22
 
 ### Changed

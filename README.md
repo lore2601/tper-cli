@@ -176,6 +176,10 @@ See [docs/agents.md](docs/agents.md) for permission rules and recipes.
 - **The zone calculator only knows municipality-level names** (`fare places` lists them). For a hamlet, use the nearest municipality or pass `--zones N`.
 - **Complaints are experimental.** The form is a three-step wizard; steps 2 and 3 can only be exercised by really filing a complaint, so they are tested against a simulation of the page, not the live site. See [docs/claims.md](docs/claims.md).
 
+## Roadmap
+
+Route planning with the TPER GTFS feeds, favourites, a `watch` mode and more: see [docs/roadmap.md](docs/roadmap.md).
+
 ## Contributing
 
 Issues and PRs are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md). Report security issues privately ([SECURITY.md](SECURITY.md)).
