@@ -1,0 +1,4 @@
+codice;ragione_sociale;giorno_chiusura;orari_mattino;orari_pomeriggio;indirizzo_ubicazione;cap_indirizzo_ubicazione;comune_indirizzo_ubicazione;provincia_indirizzo_ubicazione;coordinate;codice_zona_stimer;rivenditore_titoli_sosta
+3910;TABACCHERIA DESIDERATI DAVIDE       ;DOM;07:00 - 13:00;15:00 - 19:00;VIA BENTIVOGLIO, 180;44122;FERRARA (FE);FE;44.8582,11.6083;600;0
+4020;EDICOLA PAZZI GIOVANNA ;SAB POM,DOM;05:45 - 13:00;16:00 - 19:30;VIALE GIROLAMO SAVONUZZI SNC;44123;PONTELAGOSCURO -FE-;FE;44.8774,11.6065;600;0
+4110;EDICOLA CASONI AGOSTINA;DOM;;;PIAZZALE ALBERTO SAVONUZZI SNC;44122;FERRARA (FE);FE;44.8497,11.6038;600;0

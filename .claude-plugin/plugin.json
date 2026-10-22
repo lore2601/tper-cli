@@ -1,0 +1,12 @@
+{
+  "name": "tper",
+  "description": "Teach Claude Code to answer questions about TPER buses, fares, news and complaints in Bologna and Ferrara with the tper CLI.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Lorenzo Magnanelli"
+  },
+  "homepage": "https://github.com/lore2601/tper-cli",
+  "repository": "https://github.com/lore2601/tper-cli",
+  "license": "Apache-2.0",
+  "keywords": ["tper", "bologna", "ferrara", "public-transport", "bus", "fares", "skills"]
+}

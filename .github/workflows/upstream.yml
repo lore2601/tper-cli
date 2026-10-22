@@ -1,0 +1,60 @@
+name: Upstream
+
+# TPER and Trenitalia can change a page or a web service without notice. Every week this
+# job runs the contract tests against the real services (and checks the bundled fare table
+# against tper.it). When they break, it opens or updates a single tracking issue.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_LOCKED: "1"
+
+jobs:
+  contract:
+    name: Contract tests against the real services
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: "3.13"
+      - run: uv sync
+      - name: Live contract tests
+        id: live
+        continue-on-error: true
+        run: uv run pytest -m live -o addopts="" -q 2>&1 | tee live.log; exit "${PIPESTATUS[0]}"
+      - name: Open or update the tracking issue
+        if: steps.live.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create upstream --description "A TPER/Trenitalia service changed" --color B60205 2>/dev/null || true
+          {
+            echo "The weekly contract tests failed on $(date -u +%F)."
+            echo
+            echo "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo
+            echo '```'
+            tail -n 40 live.log
+            echo '```'
+          } > body.md
+          number=$(gh issue list --label upstream --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file body.md
+          else
+            gh issue create --title "Upstream service changed: contract tests failing" \
+              --label upstream --body-file body.md
+          fi
+      - name: Fail the job when the contract tests failed
+        if: steps.live.outcome == 'failure'
+        run: exit 1

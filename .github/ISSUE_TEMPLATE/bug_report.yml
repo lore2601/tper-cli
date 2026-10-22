@@ -1,0 +1,39 @@
+name: Bug report
+description: Something does not work as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Never paste personal data** (codice fiscale, address, email) from a complaint profile.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the exact command you ran.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output
+      description: The JSON error printed on stderr, and the output of `tper --debug ...` if relevant. `tper doctor` is also useful.
+      render: shell
+  - type: input
+    id: version
+    attributes:
+      label: tper version
+      placeholder: "tper --version"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: OS and Python version
+      placeholder: "Ubuntu 24.04, Python 3.12"

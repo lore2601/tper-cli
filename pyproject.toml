@@ -1,0 +1,98 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tper-cli"
+dynamic = ["version"]
+description = "An agent-friendly command-line interface for TPER public transport in Bologna and Ferrara: live buses, fares, zones, news and complaints (unofficial)."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [{ name = "Lorenzo Magnanelli" }]
+keywords = ["tper", "bologna", "ferrara", "emilia-romagna", "public-transport", "bus", "hellobus", "cli", "agents", "claude-code"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Natural Language :: Italian",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Utilities",
+  "Typing :: Typed",
+]
+dependencies = [
+  "click>=8.1",
+  "defusedxml>=0.7",
+  "requests>=2.31",
+  "tzdata>=2024.1; sys_platform == 'win32'",
+]
+
+[project.scripts]
+tper = "tper_cli.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/lore2601/tper-cli"
+Documentation = "https://github.com/lore2601/tper-cli#readme"
+Issues = "https://github.com/lore2601/tper-cli/issues"
+Changelog = "https://github.com/lore2601/tper-cli/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.2",
+  "pytest-cov>=5.0",
+  "responses>=0.25",
+  "ruff>=0.6",
+  "mypy>=1.11",
+  "types-requests>=2.31",
+  "types-defusedxml>=0.7",
+]
+
+[tool.hatch.version]
+path = "src/tper_cli/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tper_cli"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "docs", "skills", "tools", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "S", "RUF", "C4", "PT", "RET"]
+ignore = ["S101", "RET504"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S105", "S106", "S108", "S310", "PT018", "E501"]
+"tools/**" = ["S310"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers -m 'not live'"
+testpaths = ["tests"]
+markers = ["live: hits the real TPER/Trenitalia services (run with `pytest -m live`)"]
+
+[tool.coverage.run]
+source = ["tper_cli"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "raise NotImplementedError"]
